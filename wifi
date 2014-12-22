@@ -1,0 +1,127 @@
+#!/bin/sh
+# wrapper for wireless initialisation
+# License: GPLv3
+
+## ========= DEFAULTS =========
+
+iconon="$HOME/.config/pixmaps/wireless-on.png"
+iconoff="$HOME/.config/pixmaps/wireless-off.png"
+iface=wlan0
+leasefile=/var/lib/dhcpcd/dhcpcd-$iface.lease
+
+
+## ===== FUNCTIONS =====
+
+# show help
+usage () {
+    echo "Usage: $0 <operation> [argument(s)]"
+    echo "Operations:"
+    grep -E "    [a-z0-9]*\)" $0 | tr -d ')'
+}
+
+# send wm popup notification
+notify () {
+    if [ "`route | grep default | grep $iface`" != "" ]; then
+	msg="$1"
+	icon=$iconon
+    else
+	msg="NO ROUTE"
+	icon=$iconoff
+    fi
+    
+    notify-send -i $icon "Wireless" "${msg}"
+}
+
+#
+toolame () {
+    echo "Insufficient permissions?"
+    exit 1
+}
+
+# ===== PROGRAM =====
+
+# refresh interface
+sudo ifconfig $iface down || toolame
+sudo ifconfig $iface up
+
+# sighup previous instances
+for p in dhcpcd wpa_supplicant; do
+    if pidof $p > /dev/null; then sudo killall $p; fi
+done
+
+# rm dhcp lease
+if [ -f $leasefile ]; then
+    sudo rm $leasefile
+fi
+
+case $1 in
+    ##
+    ## common cases
+    ##
+    auto)          # automatically choose one [no arguments]
+	sudo wpa_supplicant -i$iface -c/etc/wpa_supplicant.conf -B
+	sudo dhcpcd -qt 600 $iface
+	notify "ON"
+	;;
+
+    autodebwpa)    # automatic, debug wpa_supplicant stage [no arguments]
+	sudo wpa_supplicant -i$iface -c/etc/wpa_supplicant.conf -dd
+	# sudo dhcpcd -qt 600 $iface
+	# notify "ON"
+	;;
+
+    autodebdhcp)   # automatic, debug dhcpcd stage [no arguments]
+	sudo wpa_supplicant -i$iface -c/etc/wpa_supplicant.conf -B
+	sudo dhcpcd -dt 600 $iface
+	# notify "ON"
+	;;
+
+    chroot)        # run wpa_supplicant under [chroot]
+	if [ "$2" = "" ]; then
+	    echo "Usage: $0 chroot <chroot_dir>"
+	    exit 1
+	fi
+	chroot="$2"
+	sudo wpa_supplicant -d -i$iface -c${chroot}/etc/wpa_supplicant.conf -B
+	sudo dhcpcd $iface
+	notify "ON"
+	;;
+
+    down)          # turn off wireless [no arguments]
+	sudo ifconfig $iface down
+	notify "OFF"
+	;;
+
+    open)          # non-encrypted with DHCP [ESSID]
+	if [ "$2" = "" ]; then
+	    echo "Usage: $0 open <ssid>"
+	    exit 1
+	fi
+	sudo iwconfig $iface essid "$2" ap any
+	sudo dhcpcd $iface
+	notify "ON"
+	;;
+
+    scan)          # show available networks [no arguments]
+	#sudo ifconfig $iface up
+	sudo iwlist $iface scan | grep ESSID
+	;;
+
+    ##
+    ## special cases
+    ##
+    foobar)        # flaky roomservice [no arguments]
+	sudo ifconfig eth0 down
+	sudo iwconfig $iface essid roomservice channel 11
+	sudo ifconfig $iface up
+	sudo iwlist $iface scan
+	sudo iwconfig $iface ap any
+	sudo cp /etc/resolv.conf.5c /etc/resolv.conf
+	sudo $HOME/bin/wlan-monitor &
+	notify "ON"
+	;;
+    *)
+	usage
+	exit 1
+	;;	
+esac
