@@ -6,7 +6,7 @@
 
 iconon="$HOME/.config/pixmaps/wireless-on.png"
 iconoff="$HOME/.config/pixmaps/wireless-off.png"
-iface=wlan0
+iface=wls1
 leasefile=/var/lib/dhcpcd/dhcpcd-$iface.lease
 
 
