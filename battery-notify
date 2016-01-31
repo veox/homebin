@@ -20,9 +20,6 @@ status=`acpi | cut -d, -f1 | cut -d' ' -f3`
 chargepercent=`acpi | cut -d, -f2 | tr -d ' %'`
 remaining=`acpi | cut -d, -f3,4`
 
-echo $status
-echo $chargepercent
-
 icondir="$HOME/.config/pixmaps"
 if [ "$status" == "Charging" -o "$status" == "Full" ]; then
     icon="$icondir/battery-green.png"
