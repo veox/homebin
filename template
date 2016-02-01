@@ -1,0 +1,41 @@
+#!/bin/sh
+# script template
+# statistically generated from most common lines in ~/bin
+
+## ========= DEFAULTS =========
+
+
+## ========= FUNCTIONS =========
+
+# TODO: usage
+usage () {
+    echo "Usage: $0"
+
+    exit 1
+}
+
+
+## ========= COMMANDLINE ARGS =========
+
+# TODO: getopts
+# while getopts s: name
+# do
+#     case $name in
+# 	h) usage ;;
+# 	s) step="$OPTARG" ;;
+# 	?) usage ;;
+#     esac
+# done
+# shift `expr $OPTIND - 1`
+# op="$1"
+
+
+## ========= PROGRAM =========
+
+# show usage if no arguments given
+# if [ $# -eq 0 ]; then
+#     usage
+#     exit 1
+# fi
+
+echo "ALL YOUR BASE ARE BELONG TO US"
