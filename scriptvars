@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo -------------
+echo basename \$0: `basename $0`
+echo "\$0: $0"
+echo "\$1: $1"
+echo "\$2: $2"
+echo \$#: $#
+echo \$@: $@
+echo \$*: $*
+echo \$$: $$
+echo "\$?: $? (exit status)"
+echo "\$_: $_ (previous executed)"
+echo -------------
+## zsh
+#echo -n "shift \$3: "
+#shift 3
+#echo "$1"
+#echo -------------
