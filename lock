@@ -1,0 +1,21 @@
+#!/bin/sh
+# lock the X session, disallow switching to tty
+# depends: xmodmap, slock
+
+xmmconf="$HOME/.config/xmodmap"
+
+xmodmap $xmmconf/altctrl-off
+slock
+xmodmap $xmmconf/altctrl-on
+
+# $HOME/.config/xmodmap/altctrl-on
+# ---------------------------------
+# ! enable ALT and CONTROL
+# add mod1 = Alt_L Alt_R
+# add control = Control_L Control_R
+
+# $HOME/.config/xmodmap/altctrl-off
+# ---------------------------------
+# ! disable ALT and CONTROL
+# clear mod1
+# clear control
