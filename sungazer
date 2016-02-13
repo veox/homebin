@@ -1,0 +1,21 @@
+#!/bin/sh
+# sungazer
+# depends: wget, feh
+# API: http://helioviewer.org/api/
+
+day=`date --utc +%Y-%m-%d`
+time=`date --utc +%H:%M:%S`
+
+outputdir="$HOME/img/wp/celeste.star.sungazer"
+outputfile="$outputdir/${day}-${time}.png"
+latestfile="$outputdir/latest.png"
+
+options="&imageScale=3.0&layers=[SDO,AIA,AIA,304,1,100]&x0=0&y0=0&width=1280&height=800&display=true&watermark=false"
+url="http://helioviewer.org/api/index.php?action=takeScreenshot&date=${day}T${time}Z${options}"
+
+wget -O "${outputfile}" "${url}"
+
+if [ $? -eq 0 ]; then
+    ln -fs "${outputfile}" "${latestfile}"
+    export DISPLAY=:0 && feh --bg-center "${latestfile}"
+fi
