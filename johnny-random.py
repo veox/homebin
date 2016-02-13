@@ -4,7 +4,7 @@ import random
 import os
 import subprocess
 
-imgdir = "/home/veox/img/movie-cuts/johnny-mnemonic"
+imgdir = os.path.expanduser("~/img/movie-cuts/johnny-mnemonic")
 
 images = []
 for (dirpath, dirnames, filenames) in os.walk(imgdir):
