@@ -2,7 +2,7 @@
 # encode ASCII to PPM
 # TODO: compress to fit more in
 
-infilename = 'asc2favico.py'
+infilename = 'asc2ppm.py'
 outfilename = 'favicon.ppm'
 
 lines=16
@@ -27,7 +27,6 @@ for lin in range(lines):
             outfile.write(' ')
         if (col != columns-1): outfile.write(' ') # no space at EOL plz
     outfile.write('\n')
-
     
 infile.close()
 outfile.close()
