@@ -16,14 +16,14 @@ hash_to_color ()
 	'4') mycolor='cyan'  ;;
 	'5') mycolor='red' ;;
 	'6') mycolor='red' ;;
-	'7') mycolor='red' ;;
+	'7') mycolor='blue' ;;
 	'8') mycolor='yellow'   ;;
 	'9') mycolor='yellow' ;;
 	'a') mycolor='cyan' ;;
 	'b') mycolor='magenta' ;;
-	'c') mycolor='green' ;;
+	'c') mycolor='red' ;;
 	'd') mycolor='green' ;;
-	'e') mycolor='green' ;;
+	'e') mycolor='blue' ;;
 	'f') mycolor='black' ;;
 	*)   mycolor='black' ;;
     esac
