@@ -30,11 +30,18 @@ hash_to_color ()
     echo $mycolor
 }
 
+# linux or freebsd?
+if [ "`which md5sum`" = "md5sum not found" ]; then
+    MD5='md5'
+else
+    MD5='md5sum'
+fi
+
 # read from file or stdin
 # https://stackoverflow.com/questions/6980090/how-to-read-from-file-or-stdin-in-bash
 while read line
 do
-      mycolor=`echo $line | md5sum | head -c1`
+      mycolor=`echo $line | $MD5 | head -c1`
       mycolor=`hash_to_color $mycolor`
       echo $mycolor
 done < "${1:-/dev/stdin}"
