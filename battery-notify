@@ -5,7 +5,7 @@
 
 # ========= DEFAULT SETTINGS =========
 
-battery="/sys/class/power_supply/BAT0"
+#battery="/sys/class/power_supply/BAT0"
 force=false
 chargesafe=40
 chargecrit=20
