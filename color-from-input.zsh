@@ -1,11 +1,15 @@
 #!/usr/bin/env zsh
 # take input, assign color (use in setting $PROMPT color)
 # TODO: proper function /w `return`, not `echo`
-# TODO: match table instead of `case`
+# TODO: match array/table instead of `case`
 
 #allcolors=`echo ${(o)color}`
-mycolor=''
 
+# ========= DEFAULTS =========
+mycolor='black'
+verbose=0
+
+# ========= FUNCTIONS =========
 hash_to_color ()
 {
     case $1 in
@@ -30,11 +34,44 @@ hash_to_color ()
     echo $mycolor
 }
 
+# FIXME: $0 returns "usage" for function call - get script name
+usage ()
+{
+    cat << EOF
+Usage: color-from-input.zsh [OPTION] [FILE]
+Options:
+    -h: this help
+    -v: verbose
+EOF
+    exit 1
+}
+
+# ========= OS-DEPENDENT =========
+if [ "`which md5sum`" = "md5sum not found" ]; then
+    MD5='md5'
+else
+    MD5='md5sum'
+fi
+
+# ========= COMMANDLINE ARGS =========
+while getopts hv name
+do
+    case $name in
+	h) usage ;;
+	v) verbose=1 ;;
+	?) usage ;;
+    esac
+done
+shift `expr $OPTIND - 1`
+op="$1"
+
+# ========= PROGRAM =========
 # read from file or stdin
 # https://stackoverflow.com/questions/6980090/how-to-read-from-file-or-stdin-in-bash
 while read line
 do
-      mycolor=`echo $line | md5sum | head -c1`
-      mycolor=`hash_to_color $mycolor`
-      echo $mycolor
+    mycolor=`echo $line | $MD5 | head -c1`
+    if [ $verbose -eq 1 ]; then echo -n "$mycolor "; fi
+    mycolor=`hash_to_color $mycolor`
+    echo $mycolor
 done < "${1:-/dev/stdin}"
