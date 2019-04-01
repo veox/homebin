@@ -18,17 +18,17 @@ hash_to_color ()
 	'2') mycolor='cyan' ;;
 	'3') mycolor='cyan' ;;
 	'4') mycolor='cyan'  ;;
-	'5') mycolor='red' ;;
-	'6') mycolor='red' ;;
-	'7') mycolor='blue' ;;
+	'5') mycolor='black' ;;
+	'6') mycolor='black' ;;
+	'7') mycolor='black' ;;
 	'8') mycolor='yellow'   ;;
 	'9') mycolor='yellow' ;;
-	'a') mycolor='cyan' ;;
+	'a') mycolor='magenta' ;;
 	'b') mycolor='magenta' ;;
-	'c') mycolor='red' ;;
+	'c') mycolor='green' ;;
 	'd') mycolor='green' ;;
-	'e') mycolor='blue' ;;
-	'f') mycolor='black' ;;
+	'e') mycolor='green' ;;
+	'f') mycolor='green' ;;
 	*)   mycolor='black' ;;
     esac
     echo $mycolor
@@ -46,6 +46,7 @@ EOF
     exit 1
 }
 
+# FIXME: locale-dependent
 # ========= OS-DEPENDENT =========
 if [ "`which md5sum`" = "md5sum not found" ]; then
     MD5='md5'
@@ -70,8 +71,14 @@ op="$1"
 # https://stackoverflow.com/questions/6980090/how-to-read-from-file-or-stdin-in-bash
 while read line
 do
-    mycolor=`echo $line | $MD5 | head -c1`
-    if [ $verbose -eq 1 ]; then echo -n "$mycolor "; fi
-    mycolor=`hash_to_color $mycolor`
+    # name starts with 'jo' -> color red
+    if [ "`echo $line | head -c2`" = "jo" ]; then
+        mycolor='red'
+        if [ $verbose -eq 1 ]; then echo -n "x "; fi
+    else
+        mycolorhash=`echo $line | $MD5 | head -c1`
+        if [ $verbose -eq 1 ]; then echo -n "$mycolorhash "; fi
+        mycolor=`hash_to_color $mycolorhash`
+    fi
     echo $mycolor
 done < "${1:-/dev/stdin}"
